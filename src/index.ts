@@ -37,6 +37,14 @@ export interface IRenameExtensionsOptions {
    */
   map: (name: string) => string;
 
+  /**
+   * An acorn.Options object.
+   * This option will extend the default:
+   * `{ ecmaVersion: 6, sourceType: 'module' }`
+   * Provide it if you do not transpile any es7+ features
+   * @see https://github.com/acornjs/acorn/blob/master/acorn/src/options.js
+   * @see https://github.com/acornjs/acorn/blob/9899904395d67776a78702fe5640ea4bc12b9ec6/acorn/dist/acorn.d.ts#L14
+   */
   parserOptions?: acorn.Options;
 }
 
