@@ -4,6 +4,7 @@ import { Node } from 'estree';
 import { walk } from 'estree-walker';
 import MagicString from 'magic-string';
 
+
 enum NodeType {
   Literal = 'Literal',
   CallExpression = 'CallExpression',
@@ -35,10 +36,28 @@ export interface IRenameExtensionsOptions {
    * Extensions should include the dot for both input and output.
    */
   map: (name: string) => string;
+
+  parserOptions?: acorn.Options;
 }
 
 export function isEmpty(array: any[] | undefined) {
   return !array || array.length === 0;
+}
+
+const defaultParserOptions: acorn.Options = {
+  ecmaVersion: 6,
+  sourceType: 'module',
+};
+
+export function getParserOptions(options?: acorn.Options): acorn.Options {
+  if (!options) {
+    return defaultParserOptions;
+  }
+
+  return {
+    ...defaultParserOptions,
+    ...options
+  };
 }
 
 export function getRequireSource(node: any): Node | false {
@@ -106,10 +125,7 @@ export default function rename(options: IRenameExtensionsOptions): Plugin {
 
         if (file.code) {
           const magicString = new MagicString(file.code);
-          const ast = this.parse(file.code, {
-            ecmaVersion: 6,
-            sourceType: 'module',
-          });
+          const ast = this.parse(file.code, getParserOptions(options.parserOptions));
 
           walk(ast, {
             enter(node) {
